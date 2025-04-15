@@ -11,9 +11,6 @@ HEIGHT = 600
 # Set winning score (first player to reach this score wins)
 WINNING_SCORE = 5
 
-pygame.init()
-game_font = pygame.font.SysFont('Ubuntu', 40)
-winner_font = pygame.font.SysFont('Ubuntu', 60)
 
 delay = 30
 
@@ -46,6 +43,9 @@ ball_y_vel = 0
 game_over = False
 winner = ""
 
+pygame.init()
+game_font = pygame.font.SysFont('Ubuntu', 40)
+winner_font = pygame.font.SysFont('Ubuntu', 60)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # drawing objects

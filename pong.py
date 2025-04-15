@@ -43,12 +43,13 @@ ball_y_vel = 0
 game_over = False
 winner = ""
 
+# 1. Initialization
 pygame.init()
 game_font = pygame.font.SysFont('Ubuntu', 40)
 winner_font = pygame.font.SysFont('Ubuntu', 60)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# drawing objects
+# 2. Game mechanics functions
 def draw_objects():
     pygame.draw.rect(screen, WHITE, (int(p1_x_pos), int(p1_y_pos), paddle_width, paddle_height))
     pygame.draw.rect(screen, WHITE, (int(p2_x_pos), int(p2_y_pos), paddle_width, paddle_height))
@@ -58,11 +59,11 @@ def draw_objects():
     
     # Display winner message if game is over
     if game_over:
-        winner_text = winner_font.render(f"{winner} WINS!", False, GREEN)
+        winner_text = winner_font.render(f"{winner} WINS!", False, PINK)
         restart_text = game_font.render("Press R to restart or ESC to quit", False, WHITE)
         screen.blit(winner_text, (WIDTH / 2 - winner_text.get_width() / 2, HEIGHT / 2 - 50))
         screen.blit(restart_text, (WIDTH / 2 - restart_text.get_width() / 2, HEIGHT / 2 + 50))
-
+# Renders paddles, ball, and score
 def apply_player_movement():
     global p1_y_pos
     global p2_y_pos
@@ -77,7 +78,7 @@ def apply_player_movement():
             p2_y_pos = max(p2_y_pos - paddle_speed, 0)
         elif p2_down:
             p2_y_pos = min(p2_y_pos + paddle_speed, HEIGHT - paddle_height)
-
+# Handles paddle movement based on input
 def apply_ball_movement():
     global ball_x_pos
     global ball_y_pos
@@ -96,7 +97,11 @@ def apply_ball_movement():
             ball_y_vel = (p1_y_pos + paddle_height / 2 - ball_y_pos) / 15
             ball_y_vel = -ball_y_vel
         elif ball_x_pos + ball_x_vel < 0:
+            # Player 2 scores - increase P2 score and decrease P1 score (if > 0)
             p2_score += 1
+            if p1_score > 0:
+                p1_score -= 1
+                
             ball_x_pos = WIDTH / 2
             ball_y_pos = HEIGHT / 2
             ball_x_vel = 10
@@ -113,7 +118,11 @@ def apply_ball_movement():
             ball_y_vel = (p2_y_pos + paddle_height / 2 - ball_y_pos) / 15
             ball_y_vel = -ball_y_vel
         elif ball_x_pos + ball_x_vel > WIDTH:
+            # Player 1 scores - increase P1 score and decrease P2 score (if > 0)
             p1_score += 1
+            if p2_score > 0:
+                p2_score -= 1
+                
             ball_x_pos = WIDTH / 2
             ball_y_pos = HEIGHT / 2
             ball_x_vel = -10
@@ -129,7 +138,7 @@ def apply_ball_movement():
 
         ball_x_pos += ball_x_vel
         ball_y_pos += ball_y_vel
-
+# Manages ball physics and collision detection
 def reset_game():
     global p1_score, p2_score, ball_x_pos, ball_y_pos, ball_x_vel, ball_y_vel, game_over, winner
     p1_score = 0
@@ -140,13 +149,15 @@ def reset_game():
     ball_y_vel = 0
     game_over = False
     winner = ""
+# Resets score when one player wins
 
 pygame.display.set_caption("Pink Pong")
 screen.fill(BLACK)
 pygame.display.flip()
 
+# 3. Main game loop
 running = True
-while running:
+while running:    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -180,3 +191,4 @@ while running:
     draw_objects()
     pygame.display.flip()
     pygame.time.wait(delay)
+# Process events, update game state, render screen
